@@ -3,3 +3,5 @@
 *.h5
 *.w2v
 model/
+.vscode/
+backend_server/__pycache__/
