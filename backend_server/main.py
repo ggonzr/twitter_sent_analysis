@@ -91,6 +91,11 @@ async def predict(params: predict_text):
     return tf_model.predict(tweet)
 
 
+@app.post("/similar")
+async def most_similar(word: str = ""):
+    return tf_model.most_similar(word)
+
+
 @app.post("/bigdata07/execute/rf2")
 # params: rf2_data
 def execute_rf2(params: str):

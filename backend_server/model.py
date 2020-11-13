@@ -141,3 +141,12 @@ def predict(text, include_neutral=True) -> dict:
         "score": float(score),
         "elapsed_time": time.time() - start_at,
     }
+
+
+# Permite definir la similitud de una palabra con otras de acuerdo al
+# texto leido
+def most_similar(word: str) -> dict:
+    try:
+        return w2v_model.wv.most_similar(word)
+    except Exception:
+        return {"err": f"No se puede establecer una similitud con la palabra {word}"}
