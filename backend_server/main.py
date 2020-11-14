@@ -5,6 +5,8 @@ from concurrent.futures import ThreadPoolExecutor
 from fastapi_sqlalchemy import DBSessionMiddleware
 from fastapi_sqlalchemy import db
 from db_models import Prediction as PredictionModel
+from dotenv import load_dotenv
+import os, sys
 import model as tf_model
 import uvicorn
 import subprocess
@@ -12,6 +14,10 @@ import uuid
 import glob
 
 # =============================================================================
+# Directorio Raiz
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
+
 # Pool de Threads para disparar consultas
 executor = ThreadPoolExecutor(max_workers=5)
 
@@ -29,10 +35,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-DB_URL = "postgresql+psycopg2://postgres:grupo07-superset@34.71.41.75:5432/superset"
-
 # Activar SQLAlchemy
-app.add_middleware(DBSessionMiddleware, db_url=DB_URL)
+app.add_middleware(DBSessionMiddleware, db_url=os.environ["DB_POSTGRES"])
 
 # =============================================================================
 # Modelos para los diversos body de los RF
