@@ -2,6 +2,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from concurrent.futures import ThreadPoolExecutor
+from fastapi_sqlalchemy import DBSessionMiddleware
+from fastapi_sqlalchemy import db
+from db_models import Prediction as PredictionModel
 import model as tf_model
 import uvicorn
 import subprocess
@@ -25,6 +28,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+DB_URL = "postgresql+psycopg2://postgres:grupo07-superset@34.71.41.75:5432/superset"
+
+# Activar SQLAlchemy
+app.add_middleware(DBSessionMiddleware, db_url=DB_URL)
 
 # =============================================================================
 # Modelos para los diversos body de los RF
@@ -88,7 +96,16 @@ async def predict(params: predict_text):
     su nivel de similitud
     """
     tweet = params.text
-    return tf_model.predict(tweet)
+    prediction = tf_model.predict(tweet)
+    prediction_db = PredictionModel(
+        text=tweet,
+        label=prediction["label"],
+        score=prediction["score"],
+        time=prediction["elapsed_time"],
+    )
+    db.session.add(prediction_db)
+    db.session.commit()
+    return prediction
 
 
 @app.post("/similar")
