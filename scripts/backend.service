@@ -1,0 +1,15 @@
+[Unit]
+Description=Backend del servidor para utilizar las DB y Tensorflow
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=estudiante
+WorkingDirectory=/home/estudiante/twitter_sent_analysis/
+ExecStart=/home/estudiante/twitter_sent_analysis/backend.sh
+
+[Install]
+WantedBy=multi-user.target
