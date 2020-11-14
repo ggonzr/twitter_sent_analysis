@@ -1,3 +1,4 @@
 .ipynb_*/
 .vscode/
 backend_server/__pycache__/
+*.env
